@@ -3,7 +3,7 @@ main: me.main__.MakeUse.MakeUse
 version: 1.0.0
 author: main()
 description: With MakeUse you can make somebody use a command! (e.g. make somebody read the rules)
-depend: [Permissions]
+softdepend: [Permissions]
 commands:
     makeuse:
         description: Make somebody use a command!
