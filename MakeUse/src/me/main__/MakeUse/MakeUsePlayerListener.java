@@ -17,6 +17,7 @@ public class MakeUsePlayerListener extends PlayerListener {
 		plugin = instance;
 	}
 	
+	@Override
 	public void onPlayerLogin(PlayerLoginEvent e)
 	{
 		Player p = e.getPlayer();
@@ -30,6 +31,7 @@ public class MakeUsePlayerListener extends PlayerListener {
 		}
 	}
 	
+	@Override
 	public void onPlayerJoin(PlayerJoinEvent e)
 	{
 		Player p = e.getPlayer();
@@ -42,9 +44,11 @@ public class MakeUsePlayerListener extends PlayerListener {
 			
 			login.remove(name);
 		}
-		
-		//execute onjoincmds
-		for (String cmd : plugin.onjoincmds)
-			p.performCommand(cmd);
+		else
+		{
+			//execute onjoincmds
+			for (String cmd : plugin.onjoincmds)
+				p.performCommand(cmd);
+		}
 	}
 }
