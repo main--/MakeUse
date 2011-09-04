@@ -105,17 +105,17 @@ public class MakeUse extends JavaPlugin {
 		if (onnewusercmds == null)
 			onnewusercmds = new ArrayList<String>();
 		
-		//debug
-		String onjoins = "onjoin: ";
-		for (String s : onjoincmds) {
-			onjoins += s + ", ";
-		}
-		Util.log(onjoins);
-		String onnews = "onnewuser: ";
-		for (String s : onnewusercmds) {
-			onnews += s + ", ";
-		}
-		Util.log(onnews);
+//		//debug
+//		String onjoins = "onjoin: ";
+//		for (String s : onjoincmds) {
+//			onjoins += s + ", ";
+//		}
+//		Util.log(onjoins);
+//		String onnews = "onnewuser: ";
+//		for (String s : onnewusercmds) {
+//			onnews += s + ", ";
+//		}
+//		Util.log(onnews);
 		
 		//now register the events
 		if (!(onjoincmds.isEmpty() && onnewusercmds.isEmpty()))
