@@ -1,0 +1,106 @@
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <groupId>MakeUse</groupId>
+  <artifactId>MakeUse</artifactId>
+  <version>1.1</version>
+  <name>MakeUse</name>
+  <description>With MakeUse you can make somebody use a command! (e.g. make somebody read the rules)</description>
+  <url>http://forums.bukkit.org/threads/32245</url>
+  
+  <scm>
+    <connection>scm:git:git://github.com/main--/MakeUse.git</connection>
+    <url>https://github.com/main--/MakeUse</url>
+    <developerConnection>scm:git:git@github.com:main--/MakeUse.git</developerConnection>
+  </scm>
+  
+  <build>
+    <sourceDirectory>src</sourceDirectory>
+
+    <!-- Resources -->
+    <resources>
+      <resource>
+        <targetPath>.</targetPath>
+        <filtering>true</filtering>
+        <directory>.</directory>
+        <includes>
+          <include>plugin.yml</include>
+        </includes>
+      </resource>
+      <resource>
+        <targetPath>defaults/</targetPath>
+        <filtering>true</filtering>
+        <directory>defaults</directory>
+        <includes>
+          <include>config.yml</include>
+        </includes>
+      </resource>
+    </resources>
+
+    <!-- Plugins -->
+    <plugins>
+      <!-- Compile plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-compiler-plugin</artifactId>
+        <version>2.3.2</version>
+      </plugin>
+
+      <!-- JAR creation plugin -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-jar-plugin</artifactId>
+        <version>2.3.1</version>
+        <configuration>
+          <archive>
+            <addMavenDescriptor>true</addMavenDescriptor>
+            <pomPropertiesFile>true</pomPropertiesFile>
+            <manifest>
+              <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
+              <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
+            </manifest>
+          </archive>
+        </configuration>
+      </plugin>
+
+      <!-- Release -->
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-release-plugin</artifactId>
+        <version>2.1</version>
+        <configuration>
+          <preparationGoals>assembly:assembly</preparationGoals>
+          <goals>assembly:assembly</goals>
+        </configuration>
+      </plugin>
+    </plugins>
+  </build>
+  
+  <dependencies>
+  	<dependency>
+  		<groupId>org.bukkit</groupId>
+  		<artifactId>bukkit</artifactId>
+  		<version>0.0.1-SNAPSHOT</version>
+  		<type>jar</type>
+  		<scope>compile</scope>
+  	</dependency>
+  	<dependency>
+  		<groupId>com.nijikokoun.bukkit.Permissions</groupId>
+  		<artifactId>permissions</artifactId>
+  		<scope>system</scope>
+  		<systemPath>C:\bukkit\Permissions.jar</systemPath>
+  		<version>3.6.1</version>
+  	</dependency>
+  </dependencies>
+  <repositories>
+    <repository>
+      <id>bukkit-repo</id>
+      <snapshots>
+        <enabled>true</enabled>
+      </snapshots>
+      <releases>
+        <enabled>true</enabled>
+      </releases>
+      <url>http://repo.bukkit.org/artifactory/repo/</url>
+    </repository>
+  </repositories>
+</project>
