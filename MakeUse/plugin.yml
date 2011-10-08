@@ -7,6 +7,5 @@ softdepend: [Permissions]
 commands:
     makeuse:
         description: Make somebody use a command!
-        permission: makeuse
         usage: |
             /<command> [user] [command]
