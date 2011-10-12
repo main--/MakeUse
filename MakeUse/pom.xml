@@ -26,14 +26,6 @@
           <include>plugin.yml</include>
         </includes>
       </resource>
-      <resource>
-        <targetPath>defaults/</targetPath>
-        <filtering>true</filtering>
-        <directory>defaults</directory>
-        <includes>
-          <include>config.yml</include>
-        </includes>
-      </resource>
     </resources>
 
     <!-- Plugins -->

@@ -1,30 +1,26 @@
-/**
- * 
- */
 package me.main__.MakeUse;
 
 import java.io.File;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.logging.Level;
+
 import me.main__.MakeUse.commands.BaseCommand;
 import me.main__.MakeUse.commands.MakeUseCommand;
 
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.event.Event;
 import org.bukkit.plugin.Plugin;
 import org.bukkit.plugin.PluginDescriptionFile;
 import org.bukkit.plugin.PluginManager;
 import org.bukkit.plugin.java.JavaPlugin;
-import org.bukkit.util.config.Configuration;
 
 /**
  * @author main()
- *
  */
 public class MakeUse extends JavaPlugin {
 
@@ -34,88 +30,63 @@ public class MakeUse extends JavaPlugin {
 	public List<String> onjoincmds = new ArrayList<String>();
 	public List<String> onnewusercmds = new ArrayList<String>();
 	
+	public ExecutionMode execMode = ExecutionMode.DIRECT;
+	
+	public <T> List<T> test(List<T> def) {
+		return null;
+	}
+	
 	/* (non-Javadoc)
 	 * @see org.bukkit.plugin.Plugin#onEnable()
 	 */
-	@Override
+	@SuppressWarnings("unchecked")
 	public void onEnable() {
 		commands.put("makeuse", new MakeUseCommand(this));
 		permissions = this.getServer().getPluginManager().getPlugin("Permissions");
 		
-		File dataDirectory = new File("plugins" + File.separator + "MakeUse");
-		dataDirectory.mkdirs();
-		File configFile = new File(dataDirectory, "config.yml");
-		if (!configFile.exists())
-		{
-			try {
-				configFile.createNewFile();
-///////////////////////////////////////////////////////////////////////////////////////////////////
-/// Load defaults. (I know, it's a bit heavy for just 2 lines, but I like to do it properly ^^) ///
-//////////////////                    (Taken from ModTRS)                        //////////////////
-///////////////////////////////////////////////////////////////////////////////////////////////////
-				InputStream input = MakeUse.class.getResourceAsStream("/defaults/config.yml");
-				if (input != null)
-				{
-					FileOutputStream output = null;
-					try {
-		                output = new FileOutputStream(configFile);
-		                byte[] buf = new byte[8192];
-		                int length = 0;
-		                while ((length = input.read(buf)) > 0) {
-		                    output.write(buf, 0, length);
-		                }
+		FileConfiguration config = this.getConfig();
 
-		            } catch (IOException e) {
-		                e.printStackTrace();
-		            } finally {
-		                try {
-		                    if (input != null) {
-		                        input.close();
-		                    }
-		                } catch (IOException e) {
-		                }
-
-		                try {
-		                    if (output != null) {
-		                        output.close();
-		                    }
-		                } catch (IOException e) {
-		                }
-		            }
-				}
-///////////////////////////////////////////////////////////////////////////////////////////////////
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-		Configuration config = new Configuration(configFile);
-		config.load();
-		if (config.getProperty("onjoin") instanceof List)
-			onjoincmds = config.getStringList("onjoin", null);
-		else
+		if (config.isString("onjoin"))
 			onjoincmds.add(config.getString("onjoin"));
-
-		if (config.getProperty("onnewuser") instanceof List)
-			onnewusercmds = config.getStringList("onnewuser", null);
 		else
-			onnewusercmds.add(config.getString("onnewuser"));
+			try {
+				onjoincmds = config.getList("onjoin", new ArrayList<String>());
+			} catch (Exception e) {
+				e.printStackTrace();
+				Util.log("Invalid config!", Level.SEVERE);
+				this.getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
 
-		if (onjoincmds == null)
-			onjoincmds = new ArrayList<String>();
-		if (onnewusercmds == null)
-			onnewusercmds = new ArrayList<String>();
+		if (config.isString("onnewuser"))
+			onnewusercmds.add(config.getString("onnewuser"));
+		else
+			try {
+				onnewusercmds = config.getList("onnewuser", new ArrayList<String>());
+			} catch (Exception e) {
+				e.printStackTrace();
+				Util.log("Invalid config!", Level.SEVERE);
+				this.getServer().getPluginManager().disablePlugin(this);
+				return;
+			}
 		
-//		//debug
-//		String onjoins = "onjoin: ";
-//		for (String s : onjoincmds) {
-//			onjoins += s + ", ";
-//		}
-//		Util.log(onjoins);
-//		String onnews = "onnewuser: ";
-//		for (String s : onnewusercmds) {
-//			onnews += s + ", ";
-//		}
-//		Util.log(onnews);
+		execMode = ExecutionMode.parse(config.getString("execMode", execMode.getConfigString()));
+		
+		if (execMode == null)
+			execMode = ExecutionMode.DIRECT;
+		
+		config.set("onjoin", onjoincmds);
+		config.set("onnewuser", onnewusercmds);
+		config.set("execMode", execMode.getConfigString());
+		
+		try {
+			config.save(new File(this.getDataFolder(), "config.yml"));
+		} catch (IOException e) {
+			e.printStackTrace();
+			Util.log("Couldn't save the config! Disabling...", Level.SEVERE);
+			this.getServer().getPluginManager().disablePlugin(this);
+			return;
+		}
 		
 		//now register the events
 		if (!(onjoincmds.isEmpty() && onnewusercmds.isEmpty()))
@@ -134,7 +105,6 @@ public class MakeUse extends JavaPlugin {
 	/* (non-Javadoc)
 	 * @see org.bukkit.plugin.Plugin#onDisable()
 	 */
-	@Override
 	public void onDisable() {
 		PluginDescriptionFile pdfFile = this.getDescription();
         Util.log(pdfFile.getName() + " version " + pdfFile.getVersion() + " is disabled!");
